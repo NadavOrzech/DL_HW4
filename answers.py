@@ -36,13 +36,26 @@ def part1_aac_hyperparams():
     # TODO: Tweak the hyperparameters. You can also add new ones if you need
     #   them for your model implementation.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+
+
     # ========================
     return hp
 
 
 part1_q1 = r"""
-**Your answer:**
+**Your answer:
+The policy gradient technic produces high variance, which as explained in the exercise causes erratic optimization
+behavior and slow convergence. This happens because when we compute the gradient we sample trajectories from the current
+policy and average their values thus making the computed gradient dependant on the randomly sampled trajectories. 
+Subtracting an appropriate baseline we will cause the expectation to be clustered closer to zero, which will cause the
+variance to drop.
+
+For example in our game, lets say that the actions probabilities are [0.4, 0.1, 0.3, 0.2] and the reward for the four 
+trajectories are [1000, 1001, 1003, 1010]. The variance for this parameters is 2.9 * 10e8. If we will choose baseline of
+1003 we will calculate variance for {0.4*-3, 0.1*-2, 0.5*0, 0.2*7} which value is 0.413. As we explained the variance 
+dropped dramatically and as a result improves convergence.
+**
+
 
 
 Write your answer using **markdown** and $\LaTeX$:
@@ -56,7 +69,11 @@ An equation: $e^{i\pi} -1 = 0$
 
 
 part1_q2 = r"""
-**Your answer:**
+In AAC, when using the estimated q-values as regression targets for our state-values, why do we get a valid 
+approximation? Hint: how is  𝑣𝜋(𝑠)  expressed in terms of  𝑞𝜋(𝑠,𝑎) ?
+**Your answer:
+
+**
 
 
 Write your answer using **markdown** and $\LaTeX$:
