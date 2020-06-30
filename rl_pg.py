@@ -31,11 +31,11 @@ class PolicyNet(nn.Module):
         # ====== YOUR CODE: ======
         #
         self.fc = nn.Sequential(
-            nn.Linear(in_features, 32),
-            nn.ReLU(),
-            nn.Linear(32, 16),
-            nn.ReLU(),
-            nn.Linear(16, out_actions),
+            nn.Linear(in_features, 128),
+            nn.Tanh(),
+            nn.Linear(128, 128),
+            nn.Tanh(),
+            nn.Linear(128, out_actions),
         )
         # ========================
 
@@ -57,12 +57,13 @@ class PolicyNet(nn.Module):
         """
         # TODO: Implement according to docstring.
         # ====== YOUR CODE: ======
-        obs = env.reset()
-        obs = np.array(obs)
-        obs_shape = obs.shape[0]
-        env_actions = 4
+        # obs = env.reset()
+        # obs = np.array(obs)
+        # obs_shape = obs.shape[0]
+        # env_actions = 4
 
-        net = PolicyNet(obs_shape,env_actions,**kw)
+        # net = PolicyNet(obs_shape,env_actions,**kw)
+        net = PolicyNet(env.observation_space.shape[0], env.action_space.n, **kw)
         # ========================
         return net.to(device)
 
@@ -127,8 +128,8 @@ class PolicyAgent(object):
             next_state, reward, is_done, _ = self.env.step(action)
             next_state = torch.tensor(data=next_state, device=self.device, dtype=torch.float)
             self.curr_episode_reward += reward
+            experience = Experience(self.curr_state,action,reward,is_done)
             self.curr_state = next_state
-            experience = Experience(next_state,action,reward,is_done)
 
         # ========================
         if is_done:
@@ -195,7 +196,6 @@ class VanillaPolicyGradientLoss(nn.Module):
         #  Return the policy weight term for the causal vanilla PG loss.
         #  This is a tensor of shape (N,).
         # ====== YOUR CODE: ======
-        # policy_weight = torch.sum(batch.q_vals, dim=1)
         policy_weight = batch.q_vals
         # ========================
         return policy_weight
@@ -443,7 +443,6 @@ class PolicyTrainer(object):
         #   - Backprop.
         #   - Update model parameters.
         # ====== YOUR CODE: ======
-        # qvals = batch.q_vals
         total_loss = 0
         action_scores = self.model(batch.states)
         # print(action_scores)

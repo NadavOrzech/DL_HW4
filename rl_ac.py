@@ -21,17 +21,17 @@ class AACPolicyNet(nn.Module):
         # ====== YOUR CODE: ======
         self.actor = nn.Sequential(
             nn.Linear(in_features, 64),
-            nn.ReLU(),
-            nn.Linear(64, 64),
-            nn.ReLU(),
-            nn.Linear(64, out_actions),
+            nn.Tanh(),
+            nn.Linear(64, 128),
+            nn.Tanh(),
+            nn.Linear(128, out_actions),
         )
         self.critic = nn.Sequential(
             nn.Linear(in_features, 64),
-            nn.ReLU(),
-            nn.Linear(64, 64),
-            nn.ReLU(),
-            nn.Linear(64, 1),
+            nn.Tanh(),
+            nn.Linear(64, 128),
+            nn.Tanh(),
+            nn.Linear(128, 1),
         )
         # ========================
 
@@ -75,9 +75,9 @@ class AACPolicyAgent(PolicyAgent):
     def current_action_distribution(self) -> torch.Tensor:
         # TODO: Generate the distribution as described above.
         # ====== YOUR CODE: ======
-        actions_scores = self.p_net(self.curr_state)[0]
-        # print(actions_scores)
-        actions_proba = nn.functional.softmax(actions_scores, dim=0)
+        with torch.no_grad():
+            actions_scores = self.p_net(self.curr_state)[0]
+            actions_proba = nn.functional.softmax(actions_scores, dim=0)
         # ========================
         return actions_proba
 
@@ -117,7 +117,8 @@ class AACPolicyGradientLoss(VanillaPolicyGradientLoss):
         #  loss into the state-value network.
         # ====== YOUR CODE: ======
         q_vals = batch.q_vals
-        advantage = q_vals - state_values
+        v = state_values
+        advantage = q_vals - v.detach()
         # ========================
         return advantage
 
@@ -125,6 +126,7 @@ class AACPolicyGradientLoss(VanillaPolicyGradientLoss):
         # TODO: Calculate the state-value loss.
         # ====== YOUR CODE: ======
         q_vals = batch.q_vals
+        q_vals.detach()
         loss_v = nn.functional.mse_loss(q_vals, state_values)
         # ========================
         return loss_v
