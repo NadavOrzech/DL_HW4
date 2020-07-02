@@ -79,8 +79,6 @@ q-values as regression targets we can estimate the average action-values thus ca
 
 
 part1_q3 = r"""
-Analyze and explain the graphs you got in first experiment run.
-Compare the experiment graphs you got with the AAC method to the regular PG method (cpg).
 **Your answer:
 1. In the first experiment run we produce four graphs from four different runs.
 
@@ -117,16 +115,6 @@ train and improve thus improving also the other model, and make the advantage fu
 
 As we explained the AAC method gives us the best results, as we can see as well on the loss_p graph. In the AAC case, 
 the loss is calculated with a learnable baseline, which improves its value significantly. 
-
- 
 **
-
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
 
 """

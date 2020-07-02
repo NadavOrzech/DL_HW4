@@ -57,13 +57,9 @@ class PolicyNet(nn.Module):
         """
         # TODO: Implement according to docstring.
         # ====== YOUR CODE: ======
-        # obs = env.reset()
-        # obs = np.array(obs)
-        # obs_shape = obs.shape[0]
+        env_actions = env.action_space.n
         # env_actions = 4
-
-        # net = PolicyNet(obs_shape,env_actions,**kw)
-        net = PolicyNet(env.observation_space.shape[0], env.action_space.n, **kw)
+        net = PolicyNet(env.observation_space.shape[0], env_actions, **kw)
         # ========================
         return net.to(device)
 
